@@ -38,7 +38,7 @@ class NewsController
         }
         else
         {
-            Response::json(["error" => "ID, title and description are required"], 400);
+            Response::json(["error" => "Title and description are required"], 400);
         }
     }
 

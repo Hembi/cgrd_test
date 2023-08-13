@@ -54,7 +54,17 @@ class App
         if(messageElement)
         {
             messageElement.innerHTML = "";
-            this.renderComponent(messageElement, Message($type, $message));
+            if($type && $message)
+                this.renderComponent(messageElement, Message($type, $message));
+        }
+    }
+
+    resetMessageWrapper()
+    {
+        const messageElement = document.getElementById("messageWrapper");
+        if(messageElement)
+        {
+            messageElement.innerHTML = "";
         }
     }
 

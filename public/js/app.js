@@ -50,13 +50,19 @@ window.addEventListener("click", (e) => {
                             (resp) => resp.json()
                         )
                         .then((resp) => {
-                            if(resp && !resp.error)
+                            app.resetMessageWrapper();
+                            if(resp && resp.message)
                             {
-                                app.renderView();
+                                app.renderMessage("success", resp.message);
                             }
                             else if(resp && resp.error)
                             {
                                 app.renderMessage("error", resp.error);
+                            }
+        
+                            if(resp && !resp.error)
+                            {
+                                app.renderView();
                             }
                             else
                                 console.error(resp);
@@ -90,6 +96,7 @@ window.createNews = async (e) =>
         (resp) => resp.json()
     )
     .then((resp) => {
+        app.resetMessageWrapper();
         if(resp && resp.message)
         {
             app.renderMessage("success", resp.message);
@@ -171,6 +178,7 @@ window.login = async (e) =>
         (resp) => resp.json()
     )
     .then((resp) => {
+        app.resetMessageWrapper();
         if(resp && resp.message)
         {
             app.renderMessage("success", resp.message);
@@ -206,6 +214,7 @@ window.logout = async (e) =>
             body: JSON.stringify({token:token})
         })
         .then((resp) => {
+            app.resetMessageWrapper();
             if(resp && (resp.status == 200 || resp.status == 401))
             {
                 /* Save token */
