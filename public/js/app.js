@@ -47,7 +47,15 @@ window.addEventListener("click", (e) => {
                             body: JSON.stringify({id: e.target?.dataset?.id, token: token})
                         })
                         .then(
-                            (resp) => resp.json()
+                            (resp) => {
+                                if(resp && resp.status == 401)
+                                {
+                                    localStorage.removeItem("token");
+                                    app.renderView();
+                                }
+                                else 
+                                    return resp.json();
+                            }
                         )
                         .then((resp) => {
                             app.resetMessageWrapper();
@@ -93,7 +101,15 @@ window.createNews = async (e) =>
         body: formData
     })
     .then(
-        (resp) => resp.json()
+        (resp) => {
+            if(resp && resp.status == 401)
+            {
+                localStorage.removeItem("token");
+                app.renderView();
+            }
+            else 
+                return resp.json();
+        }
     )
     .then((resp) => {
         app.resetMessageWrapper();
@@ -137,7 +153,15 @@ window.updateNews = async (e) =>
         }
     })
     .then(
-        (resp) => resp.json()
+        (resp) => {
+            if(resp && resp.status == 401)
+            {
+                localStorage.removeItem("token");
+                app.renderView();
+            }
+            else 
+                return resp.json();
+        }
     )
     .then((resp) => {
         if(resp && resp.message)
