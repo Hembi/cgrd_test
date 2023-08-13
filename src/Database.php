@@ -16,8 +16,7 @@ class Database
         }
         catch(PDOException $e)
         {
-            echo "Database connection error: " . $e->getMessage();
-            exit;
+            Response::json(["error" => "Database connection error: " . $e->getMessage()], 500);
         }
     }
 

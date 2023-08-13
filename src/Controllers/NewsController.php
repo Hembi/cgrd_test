@@ -19,8 +19,8 @@ class NewsController
         if(!empty($_POST["title"]) && !empty($_POST["description"]))
         {
             $news = new News();
-            $id = $news->create($_POST["title"], $_POST["description"]);
-            Response::json(["id" => $id]);
+            $ok = $news->create($_POST["title"], $_POST["description"]);
+            Response::json(["created" => $ok, "message" => "News created successfully!"]);
         }
         else
         {
@@ -34,7 +34,7 @@ class NewsController
         {
             $news = new News();
             $ok = $news->update($_REQUEST["id"], $_REQUEST["title"], $_REQUEST["description"]);
-            Response::json($ok);
+            Response::json(["updated" => $ok, "message" => "News changed successfully!"]);
         }
         else
         {
@@ -47,8 +47,8 @@ class NewsController
         if(!empty($_REQUEST["id"]))
         {
             $news = new News();
-            $newsList = $news->delete($_REQUEST["id"]);
-            Response::json($newsList);
+            $ok = $news->delete($_REQUEST["id"]);
+            Response::json(["deleted" => $ok, "message" => "News deleted successfully!"]);
         }
         else
         {

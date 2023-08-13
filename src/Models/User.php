@@ -6,7 +6,7 @@ class User
     private $username;
     private $password;
     private $token;
-    private $token_valid;
+    private $token_expires_at;
     private $db;
 
     public function __construct() {
@@ -51,9 +51,17 @@ class User
 
     public function updateToken($id, $token)
     {
-        $query = "UPDATE users SET token=:token WHERE id = :id";
+        $query = "UPDATE users SET token=:token, token_expires_at=DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = :id";
         $statement = $this->db->prepare($query);
         $statement->execute([":id" => $id, ":token" => $token]);
+        return $statement->rowCount();
+    }
+
+    public function removeToken($id)
+    {
+        $query = "UPDATE users SET token=NULL WHERE id = :id";
+        $statement = $this->db->prepare($query);
+        $statement->execute([":id" => $id]);
         return $statement->rowCount();
     }
 }

@@ -55,27 +55,33 @@ class Router {
 
     public function validateRequest()
     {
-        parse_str(file_get_contents('php://input'), $requestData);
-        $loginController = new LoginController();
-        if(!empty($requestData["token"]) && $loginController->validateToken($requestData["token"]))
+        $authController = new AuthController();
+        if(!empty($_REQUEST["token"]) && $authController->validateToken($_REQUEST["token"]))
         {
             return true;
         }
         else {
-            Response::json(["error" => "Invalid Token"], 401);
+            Response::json(["error" => "Invalid Token", "data" => $_REQUEST], 401);
         }
     }
+
+    function isJson($string) {
+        json_decode($string);
+        return json_last_error() === JSON_ERROR_NONE;
+     }
 
     public function run()
     {
         $method = $_SERVER['REQUEST_METHOD'];
-        if (in_array($method, ['PUT', 'DELETE'])) {
-            parse_str(file_get_contents('php://input'), $requestData);
+        if (in_array($method, ['PUT', 'DELETE', 'PATCH'])) {
+            $php_input = file_get_contents('php://input');
+            if($this->isJson($php_input)) $requestData = json_decode($php_input, true);
+            else parse_str($php_input, $requestData);
             $_REQUEST = array_merge($_REQUEST, $requestData);
         }
-        $route    = explode('?', $_SERVER['REQUEST_URI'])[0];
+
+        $route    = explode('?', $_SERVER['REQUEST_URI'])[0] ?? "/";
         if (isset($this->routes[$method])) {
-            if(empty($route)) $route = "/";
             if(isset($this->routes[$method][$route]) && isset($this->routes[$method][$route]["handler"]))
             {
                 $handler = $this->routes[$method][$route]["handler"];
@@ -116,7 +122,7 @@ class Router {
                     throw new Exception('ERROR: Route handler format not allowed'); 
             }
             else {
-                throw new Exception('ERROR: Route does not exits');
+                throw new Exception('ERROR: Route does not exists');
             }
         }
         else
